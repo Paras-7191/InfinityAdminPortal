@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { getUsers } from '../../services/users';
 import { getClients } from '../../services/clients';
 import { getSoftware } from '../../services/software';
-import { assignClient, unassignClient, assignSoftware, unassignSoftware } from '../../services/assignments';
+import { assignClient, unassignClient, assignSoftware, unassignSoftware, getClientAssignments, getSoftwareAssignments } from '../../services/assignments';
+
 import { UserRound, Monitor, Cpu, Plus, Trash2 } from 'lucide-react';
 
 export default function AssignmentsPage() {
@@ -10,12 +11,27 @@ export default function AssignmentsPage() {
   const [clients, setClients] = useState<any[]>([]);
   const [software, setSoftware] = useState<any[]>([]);
   const [selectedAgentId, setSelectedAgentId] = useState<string>('');
+  const [clientAssignments, setClientAssignments] = useState<any[]>([]);
+  const [softwareAssignments, setSoftwareAssignments] = useState<any[]>([]);  
   const [isLoading, setIsLoading] = useState(true);
+  const loadAssignments = async () => {
+    const [clientAssignmentsData, softwareAssignmentsData] = await Promise.all([
+      getClientAssignments(),
+      getSoftwareAssignments()
+    ]);
+
+    setClientAssignments(clientAssignmentsData);
+    setSoftwareAssignments(softwareAssignmentsData);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [usersData, clientsData, softwareData] = await Promise.all([
+        const [
+          usersData,
+          clientsData,
+          softwareData
+        ] = await Promise.all([
           getUsers(),
           getClients(),
           getSoftware()
@@ -23,6 +39,7 @@ export default function AssignmentsPage() {
         setAgents(usersData.filter((u: any) => u.role === 'AGENT'));
         setClients(clientsData);
         setSoftware(softwareData);
+        await loadAssignments();
       } catch (error) {
         console.error('Failed to fetch data', error);
       } finally {
@@ -35,9 +52,7 @@ export default function AssignmentsPage() {
   const handleAssignClient = async (clientId: string) => {
     try {
       await assignClient(selectedAgentId, clientId);
-      // In a real app, we'd refresh the agent's assignments here.
-      // Since we don't have a specific "get agent assignments" endpoint yet,
-      // we'll assume the list update is handled by the backend and we refresh the page state if needed.
+      await loadAssignments();
       alert('Client assigned');
     } catch (error) {
       alert('Failed to assign client');
@@ -47,6 +62,7 @@ export default function AssignmentsPage() {
   const handleUnassignClient = async (clientId: string) => {
     try {
       await unassignClient(selectedAgentId, clientId);
+      await loadAssignments();
       alert('Client unassigned');
     } catch (error) {
       alert('Failed to unassign client');
@@ -56,6 +72,7 @@ export default function AssignmentsPage() {
   const handleAssignSoftware = async (softwareId: string) => {
     try {
       await assignSoftware(selectedAgentId, softwareId);
+      await loadAssignments();
       alert('Software assigned');
     } catch (error) {
       alert('Failed to assign software');
@@ -65,11 +82,26 @@ export default function AssignmentsPage() {
   const handleUnassignSoftware = async (softwareId: string) => {
     try {
       await unassignSoftware(selectedAgentId, softwareId);
+      await loadAssignments();
       alert('Software unassigned');
     } catch (error) {
       alert('Failed to unassign software');
     }
   };
+
+  const isClientAssigned = (clientId: string) =>
+    clientAssignments.some(
+      assignment =>
+        assignment.agent_id === selectedAgentId &&
+        assignment.client_id === clientId
+    );
+
+  const isSoftwareAssigned = (softwareId: string) =>
+    softwareAssignments.some(
+      assignment =>
+        assignment.agent_id === selectedAgentId &&
+        assignment.software_id === softwareId
+    );
 
   if (isLoading) return <div>Loading...</div>;
 
@@ -117,18 +149,18 @@ export default function AssignmentsPage() {
                     <p className="text-xs text-gray-500 font-mono">{client.hwid}</p>
                   </div>
                   <div className="flex items-center space-x-2">
-                    {/* In a real app, we'd know if it's already assigned.
-                        For now, we'll provide both actions as per the "Distribute" intent. */}
-                    <button 
+                    <button
                       onClick={() => handleAssignClient(client.id)}
-                      className="p-1 text-green-600 hover:bg-green-50 rounded"
+                      disabled={isClientAssigned(client.id)}
+                      className="p-1 text-green-600 hover:bg-green-50 rounded disabled:opacity-40"
                       title="Assign"
                     >
                       <Plus size={20} />
                     </button>
-                    <button 
+                    <button
                       onClick={() => handleUnassignClient(client.id)}
-                      className="p-1 text-red-600 hover:bg-red-50 rounded"
+                      disabled={!isClientAssigned(client.id)}
+                      className="p-1 text-red-600 hover:bg-red-50 rounded disabled:opacity-40"
                       title="Unassign"
                     >
                       <Trash2 size={20} />
@@ -155,16 +187,18 @@ export default function AssignmentsPage() {
                     <span className="text-xs text-green-600 font-semibold">{sw.status}</span>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <button 
+                    <button
                       onClick={() => handleAssignSoftware(sw.id)}
-                      className="p-1 text-green-600 hover:bg-green-50 rounded"
+                      disabled={isSoftwareAssigned(sw.id)}
+                      className="p-1 text-green-600 hover:bg-green-50 rounded disabled:opacity-40"
                       title="Assign"
                     >
                       <Plus size={20} />
                     </button>
-                    <button 
+                    <button
                       onClick={() => handleUnassignSoftware(sw.id)}
-                      className="p-1 text-red-600 hover:bg-red-50 rounded"
+                      disabled={!isSoftwareAssigned(sw.id)}
+                      className="p-1 text-red-600 hover:bg-red-50 rounded disabled:opacity-40"
                       title="Unassign"
                     >
                       <Trash2 size={20} />

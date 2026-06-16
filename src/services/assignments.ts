@@ -19,3 +19,13 @@ export const unassignSoftware = async (agent_id: string, target_id: string) => {
   const response = await api.delete('/management/assignments/software', { data: { agent_id, target_id } });
   return response.data;
 };
+
+export const getClientAssignments = async () => {
+  const response = await api.get('/management/assignments/client');
+  return response.data;
+};
+
+export const getSoftwareAssignments = async () => {
+  const response = await api.get('/management/assignments/software');
+  return response.data;
+};

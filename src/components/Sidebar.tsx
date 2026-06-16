@@ -20,14 +20,13 @@ const navItems = [
   { to: '/clients', label: 'Clients', icon: Monitor, permission: 'CLIENT_VIEW' },
   { to: '/software', label: 'Software', icon: Cpu, permission: 'SOFTWARE_VIEW' },
   { to: '/assignments', label: 'Assignments', icon: ClipboardList, permission: 'ASSIGN_CLIENTS' },
-  { to: '/my-clients', label: 'My Clients', icon: Monitor, role: 'AGENT' },
-  { to: '/my-software', label: 'My Software', icon: Cpu, role: 'AGENT' },
+  { to: '/settings', label: 'Settings', icon: Settings, permission: 'SETTINGS_VIEW' },
 ];
 
 const logItems = [
-  { to: '/logs/system', label: 'System Logs', icon: History, permission: 'SYSTEM_LOGS_VIEW' },
-  { to: '/logs/security', label: 'Security Logs', icon: ShieldAlert, permission: 'SECURITY_LOGS_VIEW' },
-  { to: '/logs/runtime', label: 'Runtime Logs', icon: Activity, permission: 'RUNTIME_LOGS_VIEW' },
+  { to: '/logs/system', label: 'System Logs', icon: History, permission: 'SYSTEM_LOG_VIEW' },
+  { to: '/logs/security', label: 'Security Logs', icon: ShieldAlert, permission: 'SECURITY_LOG_VIEW' },
+  { to: '/logs/runtime', label: 'Runtime Logs', icon: Activity, permission: 'RUNTIME_LOG_VIEW' },
 ];
 
 export default function Sidebar() {
@@ -42,7 +41,6 @@ export default function Sidebar() {
 
       <nav className="flex-1 overflow-y-auto p-4 space-y-2">
         {navItems.map((item) => {
-          if (item.role && user?.role !== item.role) return null;
           
           if (item.permission) {
             return (

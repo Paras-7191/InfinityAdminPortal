@@ -15,6 +15,7 @@ import SecurityLogsPage from '../pages/logs/SecurityLogsPage';
 import RuntimeLogsPage from '../pages/logs/RuntimeLogsPage';
 import SettingsPage from '../pages/settings/SettingsPage';
 import NotFoundPage from '../pages/NotFoundPage';
+import RoutePermissionGuard from '../components/RoutePermissionGuard';
 
 export const router = createBrowserRouter([
   {
@@ -43,53 +44,83 @@ export const router = createBrowserRouter([
       },
       {
         path: 'admins',
-        element: <AdminsPage />,
+        element:
+          <RoutePermissionGuard permission="USER_VIEW">
+          <AdminsPage />
+          </RoutePermissionGuard>,
       },
       {
         path: 'agents',
-        element: <AgentsPage />,
+        element: 
+          <RoutePermissionGuard permission="USER_VIEW">
+          <AgentsPage />
+          </RoutePermissionGuard>,
       },
       {
         path: 'clients',
         children: [
           {
             index: true,
-            element: <ClientsPage />,
+            element: 
+              <RoutePermissionGuard permission="CLIENT_VIEW">
+              <ClientsPage />
+              </RoutePermissionGuard>,
           },
           {
             path: ':clientId',
-            element: <ClientDetailsPage />,
+            element:
+              <RoutePermissionGuard permission="CLIENT_VIEW">
+              <ClientDetailsPage />
+             </RoutePermissionGuard>,
           },
         ],
       },
       {
         path: 'software',
-        element: <SoftwarePage />,
+        element: 
+          <RoutePermissionGuard permission="SOFTWARE_VIEW">
+          <SoftwarePage />
+          </RoutePermissionGuard>,
       },
       {
         path: 'assignments',
-        element: <AssignmentsPage />,
+        element: 
+        <RoutePermissionGuard permission="ASSIGNMENT_VIEW">
+        <AssignmentsPage />
+        </RoutePermissionGuard>,
       },
       {
         path: 'logs',
         children: [
           {
             path: 'system',
-            element: <SystemLogsPage />,
+            element:
+            <RoutePermissionGuard permission="SYSTEM_LOG_VIEW">
+            <SystemLogsPage />
+            </RoutePermissionGuard>,
           },
           {
             path: 'security',
-            element: <SecurityLogsPage />,
+            element:
+            <RoutePermissionGuard permission="SECURITY_LOG_VIEW">
+            <SecurityLogsPage />
+            </RoutePermissionGuard>,
           },
           {
             path: 'runtime',
-            element: <RuntimeLogsPage />,
+            element:
+            <RoutePermissionGuard permission="RUNTIME_LOG_VIEW">
+            <RuntimeLogsPage />
+            </RoutePermissionGuard>,
           },
         ],
       },
       {
         path: 'settings',
-        element: <SettingsPage />,
+        element:
+          <RoutePermissionGuard permission="SETTINGS_VIEW">
+          <SettingsPage />
+          </RoutePermissionGuard>,
       },
     ],
   },
