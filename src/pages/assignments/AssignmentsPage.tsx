@@ -7,12 +7,12 @@ import { assignClient, unassignClient, assignSoftware, unassignSoftware, getClie
 import { UserRound, Monitor, Cpu, Plus, Trash2 } from 'lucide-react';
 
 export default function AssignmentsPage() {
-  const [agents, setAgents] = useState<any[]>([]);
-  const [clients, setClients] = useState<any[]>([]);
-  const [software, setSoftware] = useState<any[]>([]);
+  const [agents, setAgents] = useState<Record<string, any>[]>([]);
+  const [clients, setClients] = useState<Record<string, any>[]>([]);
+  const [software, setSoftware] = useState<Record<string, any>[]>([]);
   const [selectedAgentId, setSelectedAgentId] = useState<string>('');
-  const [clientAssignments, setClientAssignments] = useState<any[]>([]);
-  const [softwareAssignments, setSoftwareAssignments] = useState<any[]>([]);  
+  const [clientAssignments, setClientAssignments] = useState<Record<string, any>[]>([]);
+  const [softwareAssignments, setSoftwareAssignments] = useState<Record<string, any>[]>([]); 
   const [isLoading, setIsLoading] = useState(true);
   const loadAssignments = async () => {
     const [clientAssignmentsData, softwareAssignmentsData] = await Promise.all([
@@ -36,7 +36,7 @@ export default function AssignmentsPage() {
           getClients(),
           getSoftware()
         ]);
-        setAgents(usersData.filter((u: any) => u.role === 'AGENT'));
+        setAgents(usersData.filter((u: Record<string, any>) => u.role === 'AGENT'));
         setClients(clientsData);
         setSoftware(softwareData);
         await loadAssignments();

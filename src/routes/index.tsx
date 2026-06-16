@@ -46,14 +46,14 @@ export const router = createBrowserRouter([
         path: 'admins',
         element:
           <RoutePermissionGuard permission="USER_VIEW">
-          <AdminsPage />
+            <AdminsPage />
           </RoutePermissionGuard>,
       },
       {
         path: 'agents',
         element: 
           <RoutePermissionGuard permission="USER_VIEW">
-          <AgentsPage />
+            <AgentsPage />
           </RoutePermissionGuard>,
       },
       {
@@ -63,15 +63,15 @@ export const router = createBrowserRouter([
             index: true,
             element: 
               <RoutePermissionGuard permission="CLIENT_VIEW">
-              <ClientsPage />
+                <ClientsPage />
               </RoutePermissionGuard>,
           },
           {
             path: ':clientId',
             element:
               <RoutePermissionGuard permission="CLIENT_VIEW">
-              <ClientDetailsPage />
-             </RoutePermissionGuard>,
+                <ClientDetailsPage />
+              </RoutePermissionGuard>,
           },
         ],
       },
@@ -79,15 +79,15 @@ export const router = createBrowserRouter([
         path: 'software',
         element: 
           <RoutePermissionGuard permission="SOFTWARE_VIEW">
-          <SoftwarePage />
+            <SoftwarePage />
           </RoutePermissionGuard>,
       },
       {
         path: 'assignments',
-        element: 
-        <RoutePermissionGuard permission="ASSIGNMENT_VIEW">
-        <AssignmentsPage />
-        </RoutePermissionGuard>,
+        element:
+          <RoutePermissionGuard permission="VIEW_ASSIGNMENTS">
+            <AssignmentsPage />
+          </RoutePermissionGuard>,
       },
       {
         path: 'logs',
@@ -96,21 +96,21 @@ export const router = createBrowserRouter([
             path: 'system',
             element:
             <RoutePermissionGuard permission="SYSTEM_LOG_VIEW">
-            <SystemLogsPage />
+              <SystemLogsPage />
             </RoutePermissionGuard>,
           },
           {
             path: 'security',
             element:
             <RoutePermissionGuard permission="SECURITY_LOG_VIEW">
-            <SecurityLogsPage />
+              <SecurityLogsPage />
             </RoutePermissionGuard>,
           },
           {
             path: 'runtime',
             element:
             <RoutePermissionGuard permission="RUNTIME_LOG_VIEW">
-            <RuntimeLogsPage />
+              <RuntimeLogsPage />
             </RoutePermissionGuard>,
           },
         ],
@@ -119,7 +119,7 @@ export const router = createBrowserRouter([
         path: 'settings',
         element:
           <RoutePermissionGuard permission="SETTINGS_VIEW">
-          <SettingsPage />
+            <SettingsPage />
           </RoutePermissionGuard>,
       },
     ],

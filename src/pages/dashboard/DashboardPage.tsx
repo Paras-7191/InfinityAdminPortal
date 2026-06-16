@@ -18,19 +18,15 @@ export default function DashboardPage() {
   usePolling(fetchActivationQueue, 5000);
   usePolling(fetchSystemLogs, 10000);
 
-  const otpColumns = [
-    { header: 'Type', accessor: 'otp_type' },
-    { header: 'User ID', accessor: 'user_id' },
-    { header: 'Status', accessor: 'status' },
-    { header: 'Requested At', accessor: 'requested_at' },
-  ];
+  const otpColumns = Object.keys(otpQueue?.[0] || {}).map(key => ({
+    header: key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
+    accessor: key,
+  }));
 
-  const activationColumns = [
-    { header: 'Request ID', accessor: 'request_id' },
-    { header: 'Client', accessor: 'client_name' },
-    { header: 'Software', accessor: 'software_name' },
-    { header: 'Status', accessor: 'status' },
-  ];
+  const activationColumns = Object.keys(activationQueue?.[0] || {}).map(key => ({
+    header: key.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
+    accessor: key,
+  }));
 
   return (
     <div className="space-y-6">
@@ -67,10 +63,12 @@ export default function DashboardPage() {
               systemLogs.slice(0, 10).map((log, idx) => (
                 <div key={idx} className="p-3 bg-gray-50 dark:bg-gray-700/50 rounded border-l-4 border-blue-500">
                   <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mb-1">
-                    <span>{log.event}</span>
-                    <span>{log.timestamp}</span>
+                    <span>{log.event ?? log.type ?? 'Unknown Event'}</span>
+                    <span>{log.timestamp ?? log.created_at ?? '-'}</span>
                   </div>
-                  <p className="text-sm text-gray-800 dark:text-gray-200">{log.message}</p>
+                  <p className="text-sm text-gray-800 dark:text-gray-200">
+                    {log.message ?? log.details ?? JSON.stringify(log)}
+                  </p>
                 </div>
               ))
             )}

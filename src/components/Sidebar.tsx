@@ -19,7 +19,7 @@ const navItems = [
   { to: '/agents', label: 'Agents', icon: UserRound, permission: 'USER_VIEW' },
   { to: '/clients', label: 'Clients', icon: Monitor, permission: 'CLIENT_VIEW' },
   { to: '/software', label: 'Software', icon: Cpu, permission: 'SOFTWARE_VIEW' },
-  { to: '/assignments', label: 'Assignments', icon: ClipboardList, permission: 'ASSIGN_CLIENTS' },
+  { to: '/assignments', label: 'Assignments', icon: ClipboardList, permission: 'VIEW_ASSIGNMENTS' },
   { to: '/settings', label: 'Settings', icon: Settings, permission: 'SETTINGS_VIEW' },
 ];
 
@@ -61,16 +61,18 @@ export default function Sidebar() {
             <NavItem {...item} />
           </PermissionGuard>
         ))}
-
-        <div className="pt-4">
-          <NavItem to="/settings" label="Settings" icon={Settings} permission="SETTINGS_VIEW" />
-        </div>
       </nav>
     </aside>
   );
 }
 
-function NavItem({ to, label, icon: Icon }: any) {
+interface NavItemProps {
+  to: string;
+  label: string;
+  icon: any;
+}
+
+function NavItem({ to, label, icon: Icon }: NavItemProps) {
   return (
     <NavLink
       to={to}
